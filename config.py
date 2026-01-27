@@ -11,13 +11,18 @@ cloudinary.config(
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 ARTIFACTS_DIR = os.path.join(BASE_DIR, "artifacts")
+RENDER_SECRET = "/etc/secrets/serviceAccountKey.json"
 
 MODEL_PATH = os.path.join(ARTIFACTS_DIR, "recomart_model.keras")
 EMBEDDING_PATH = os.path.join(ARTIFACTS_DIR, "item_embeddings.npy")
 CONTENT_PATH = os.path.join(ARTIFACTS_DIR, "item_content_vectors.npy")
 META_PATH = os.path.join(ARTIFACTS_DIR, "ecommerce_api_metadata.pkl")
 
-KEY_PATH = os.path.join(BASE_DIR, "serviceAccountKey.json")
+#KEY_PATH = os.path.join(BASE_DIR, "serviceAccountKey.json")
+if os.path.exists(RENDER_SECRET):
+    KEY_PATH = RENDER_SECRET
+else:
+    KEY_PATH = os.path.join(BASE_DIR, "serviceAccountKey.json")
 
 REDIS_HOST = 'redis-19872.c253.us-central1-1.gce.cloud.redislabs.com'
 REDIS_PORT = 19872
