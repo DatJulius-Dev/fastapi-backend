@@ -28,4 +28,8 @@ if not firebase_admin._apps:
     else:
         print("Firebase Error: Key file not found!")
 
-db = firestore.client()
+try:
+    db = firestore.client()
+except Exception as e:
+    print(f"Firestore Client Error: {e}")
+    db = None
