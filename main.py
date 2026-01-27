@@ -1,3 +1,4 @@
+import asyncio
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
@@ -23,15 +24,30 @@ from routers import (
 from database import r, db
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    print("--- STARTUP: Loading ML Models & Resources ---")
-    ml_resources.load_all()    
+async def lifespan(app_instance: FastAPI):
+    print("--- STARTUP: Server is online. Port opened! ---")
+
+    async def load_models_background():
+        await asyncio.sleep(1) 
+        print("--- BACKGROUND: Loading ML Models & Resources in progress... ---")
+        try:
+            ml_resources.load_all()
+            print("--- BACKGROUND: ML Models Loaded Successfully! ---")
+        except Exception as e:
+            print(f"--- BACKGROUND ERROR: Failed to load models: {e} ---")
+
+    asyncio.create_task(load_models_background())
+    
     yield
+    
     print("--- SHUTDOWN: Cleaning up resources ---")
     if r:
         print("Clearing Redis Cache...")
-        r.flushdb()
-        r.close()
+        try:
+            r.flushdb()
+            r.close()
+        except:
+            pass
 
 app = FastAPI(lifespan=lifespan, title="Recomart E-commerce API")
 
