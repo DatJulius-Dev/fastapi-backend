@@ -77,9 +77,11 @@ app.include_router(interaction_router.router)      # Interaction
 app.include_router(persona_router)
 
 @app.get("/")
+@app.head("/")
 def home():
     return {"message": "Welcome to Recomart API Service v3.0"}
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
