@@ -1,8 +1,26 @@
 import asyncio
 import os
+import json
+import firebase_admin
+from firebase_admin import credentials
+
+firebase_config_str = os.getenv("FIREBASE_CONFIG")
+
+if firebase_config_str:
+    try:
+        cred_dict = json.loads(firebase_config_str)
+        cred = credentials.Certificate(cred_dict)
+        firebase_admin.initialize_app(cred)
+        print("--- FIREBASE: Khởi tạo thành công từ Environment Variable! ---")
+    except Exception as e:
+        print(f"--- FIREBASE ERROR: Lỗi định dạng JSON hoặc Credential: {e} ---")
+else:
+    print("--- FIREBASE WARNING: Không tìm thấy biến FIREBASE_CONFIG. Bỏ qua khởi tạo. ---")
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
