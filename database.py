@@ -11,12 +11,14 @@ try:
         port=REDIS_PORT, 
         password=REDIS_PASSWORD,
         db=REDIS_DB, 
-        decode_responses=True
+        decode_responses=True,
+        socket_connect_timeout=1,
+        socket_timeout=1
     )
     r.ping()
     print(f"Redis: Connected to {REDIS_HOST}")
 except Exception as e:
-    print(f"Redis Error: {e}")
+    print(f"Redis Error: {e} -> Running without Redis")
     r = None
 
 # --- Firebase Connection ---
